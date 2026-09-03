@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moreno Industries - Gestor Técnico y Taller de Motocicletas</title>
+    <!-- Tailwind CSS para un diseño profesional y responsivo -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Header Principal -->
+    <header class="bg-slate-900 border-b border-slate-800 p-4 shadow-md">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold text-blue-400 tracking-wide">🔧 Moreno Industries &bull; Sistema Técnico de Motocicletas</h1>
+            <span class="text-xs bg-blue-900/60 text-blue-300 px-3 py-1 rounded-full border border-blue-700/50">Base de Datos Activa</span>
+        </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="container mx-auto flex-1 p-4 grid grid-cols-1 lg:grid-cols-4 gap-6 mt-4">
+        
+        <!-- Panel Lateral: Selección de Modelos y Manuales -->
+        <aside class="bg-slate-900/80 border border-slate-800 rounded-xl p-4 flex flex-col gap-4 shadow-lg lg:col-span-1">
+            <h2 class="text-lg font-semibold text-slate-200 border-b border-slate-800 pb-2">Catálogo de Modelos</h2>
+            
+            <div class="flex flex-col gap-2">
+                <label for="selector-modelo" class="text-xs text-slate-400">Seleccionar Vehículo:</label>
+                <select id="selector-modelo" class="bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-sm text-slate-200 focus:outline-none focus:border-blue-500">
+                    <option value="bajaj-dominar">Bajaj Dominar 400</option>
+                </select>
+            </div>
+
+            <div class="mt-4 flex flex-col gap-2">
+                <h3 class="text-sm font-medium text-slate-300">Secciones Técnicas</h3>
+                <div class="grid grid-cols-1 gap-1.5" id="menu-secciones">
+                    <button onclick="cargarSeccion('general', event)" class="text-left px-3 py-2 rounded-lg text-sm bg-blue-600 text-white font-medium transition hover:bg-blue-500">General y Ficha</button>
+                    <button onclick="cargarSeccion('torques', event)" class="text-left px-3 py-2 rounded-lg text-sm bg-slate-800 text-slate-300 transition hover:bg-slate-700">Torques de Apriete</button>
+                    <button onclick="cargarSeccion('mantenimiento', event)" class="text-left px-3 py-2 rounded-lg text-sm bg-slate-800 text-slate-300 transition hover:bg-slate-700">Mantenimiento</button>
+                    <button onclick="cargarSeccion('despiece', event)" class="text-left px-3 py-2 rounded-lg text-sm bg-slate-800 text-slate-300 transition hover:bg-slate-700">Despiece y Vista 3D</button>
+                    <button onclick="cargarSeccion('ramal', event)" class="text-left px-3 py-2 rounded-lg text-sm bg-slate-800 text-slate-300 transition hover:bg-slate-700">Ramal Eléctrico (Esquema + 3D)</button>
+                    <button onclick="cargarSeccion('manuales', event)" class="text-left px-3 py-2 rounded-lg text-sm bg-slate-800 text-slate-300 transition hover:bg-slate-700">Manuales Oficiales</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Panel de Visualización Dinámica -->
+        <section class="bg-slate-900/80 border border-slate-800 rounded-xl p-6 shadow-lg lg:col-span-3 flex flex-col">
+            <div id="header-panel" class="mb-4">
+                <h2 id="titulo-seccion" class="text-2xl font-bold text-white">General y Ficha Técnica</h2>
+                <p id="subtitulo-seccion" class="text-sm text-slate-400">Información general del modelo seleccionado.</p>
+            </div>
+
+            <!-- Contenedor Interactivo Principal -->
+            <div id="panel-contenido" class="flex-1 flex flex-col gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-slate-800/50 p-4 rounded-lg border border-slate-700/60">
+                        <span class="text-xs text-blue-400 font-semibold uppercase">Motorización</span>
+                        <p class="text-sm text-slate-300 mt-1">Configuración de alto rendimiento adaptada al modelo en selección.</p>
+                    </div>
+                    <div class="bg-slate-800/50 p-4 rounded-lg border border-slate-700/60">
+                        <span class="text-xs text-blue-400 font-semibold uppercase">Sistema Eléctrico</span>
+                        <p class="text-sm text-slate-300 mt-1">Gestión electrónica con ramal integrado, ECU y sensores de diagnóstico.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-4 text-xs text-slate-500 border-t border-slate-800 mt-auto">
+        Moreno Industries &bull; Sistema de Gestión de Talleres Mecánicos &bull; Configurado en VS Code
+    </footer>
+
+    <!-- Script de Control Dinámico -->
+    <script>
+        const modelos3D = {
+            "bajaj-dominar": {
+                nombre: "Bajaj Dominar 400",
+                url: "https://sketchfab.com/models/79a5ba2310334ef285916be0a0f0e7e6/embed"
+            }
+        };
+
+        function cargarSeccion(seccion, event = null) {
+            const titulo = document.getElementById('titulo-seccion');
+            const subtitulo = document.getElementById('subtitulo-seccion');
+            const panel = document.getElementById('panel-contenido');
+            const infoModelo = modelos3D["bajaj-dominar"];
+
+            if (event && event.target) {
+                const botones = document.querySelectorAll('#menu-secciones button');
+                botones.forEach(b => {
+                    b.className = "text-left px-3 py-2 rounded-lg text-sm bg-slate-800 text-slate-300 transition hover:bg-slate-700";
+                });
+                event.target.className = "text-left px-3 py-2 rounded-lg text-sm bg-blue-600 text-white font-medium transition hover:bg-blue-500";
+            }
+
+            if (seccion === 'general') {
+                titulo.textContent = "General y Ficha Técnica";
+                subtitulo.textContent = `Especificaciones base para: ${infoModelo.nombre}`;
+                panel.innerHTML = `
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-slate-800/50 p-4 rounded-lg border border-slate-700/60">
+                            <span class="text-xs text-blue-400 font-semibold uppercase">Motorización</span>
+                            <p class="text-sm text-slate-300 mt-1">Configuración optimizada para alto par y respuesta lineal en aceleración (${infoModelo.nombre}).</p>
+                        </div>
+                        <div class="bg-slate-800/50 p-4 rounded-lg border border-slate-700/60">
+                            <span class="text-xs text-blue-400 font-semibold uppercase">Sistema Eléctrico</span>
+                            <p class="text-sm text-slate-300 mt-1">Batería de libre mantenimiento, sistema de carga regulada y sensores de diagnóstico.</p>
+                        </div>
+                    </div>
+                `;
+            } else if (seccion === 'torques') {
+                titulo.textContent = "Torques de Apriete Oficiales";
+                subtitulo.textContent = `Valores recomendados para ${infoModelo.nombre} (Nm / Kgf-m)`;
+                panel.innerHTML = `
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm text-slate-300">
+                            <thead class="bg-slate-800 text-xs uppercase text-slate-400">
+                                <tr>
+                                    <th class="p-3">Componente / Perno</th>
+                                    <th class="p-3">Torque (Nm)</th>
+                                    <th class="p-3">Observaciones</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-800">
+                                <tr class="hover:bg-slate-800/40">
+                                    <td class="p-3 font-medium">Tapa de Culata / Árbol de Levas</td>
+                                    <td class="p-3 text-blue-400 font-semibold">12 - 14 Nm</td>
+                                    <td class="p-3">Aplicar secuencia en cruz</td>
+                                </tr>
+                                <tr class="hover:bg-slate-800/40">
+                                    <td class="p-3 font-medium">Eje de Rueda Delantera</td>
+                                    <td class="p-3 text-blue-400 font-semibold">59 Nm</td>
+                                    <td class="p-3">Verificar alineación de barras</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            } else if (seccion === 'mantenimiento') {
+                titulo.textContent = "Tabla de Mantenimiento Preventivo";
+                subtitulo.textContent = `Intervalos de servicio para ${infoModelo.nombre}`;
+                panel.innerHTML = `
+                    <ul class="flex flex-col gap-3">
+                        <li class="bg-slate-800/40 border border-slate-800 p-3 rounded-lg text-sm flex justify-between items-center">
+                            <span>Cambio de Aceite de Motor y Filtro</span>
+                            <span class="text-xs bg-slate-700 text-slate-300 px-2.5 py-1 rounded">Cada 2,500 - 3,000 km</span>
+                        </li>
+                        <li class="bg-slate-800/40 border border-slate-800 p-3 rounded-lg text-sm flex justify-between items-center">
+                            <span>Limpieza y Lubricación de Cadena de Transmisión</span>
+                            <span class="text-xs bg-slate-700 text-slate-300 px-2.5 py-1 rounded">Cada 500 km</span>
+                        </li>
+                    </ul>
+                `;
+            } else if (seccion === 'despiece') {
+                titulo.textContent = "Despiece y Vista 3D Interactivo";
+                subtitulo.textContent = `Modelo 3D activo: ${infoModelo.nombre}`;
+                panel.innerHTML = `
+                    <div class="w-full h-[480px] rounded-lg overflow-hidden border border-slate-800 bg-black relative">
+                        <iframe title="Modelo 3D Moto" frameborder="0" allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking" src="${infoModelo.url}" class="w-full h-full"></iframe>
+                    </div>
+                `;
+            } else if (seccion === 'ramal') {
+                titulo.textContent = "Ramal Eléctrico (Visor 3D + Esquema Técnico)";
+                subtitulo.textContent = `Combinación de modelo 3D (${infoModelo.nombre}) y el plano físico del ramal eléctrico.`;
+                panel.innerHTML = `
+                    <div class="flex flex-col gap-4">
+                        <!-- Visor 3D superior -->
+                        <div class="w-full h-[300px] rounded-lg overflow-hidden border border-slate-700 bg-black relative">
+                            <iframe title="Modelo 3D Vista Eléctrica" frameborder="0" allowfullscreen mozallowfullscreen="true" webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking" src="${infoModelo.url}" class="w-full h-full"></iframe>
+                        </div>
+                        
+                        <!-- Imagen del Ramal Eléctrico Integrada -->
+                        <div class="w-full rounded-lg overflow-hidden border border-slate-700 bg-black flex flex-col items-center p-2">
+                            <span class="text-xs text-blue-400 font-semibold uppercase mb-2">Esquema Físico del Ramal Eléctrico y Leyenda</span>
+                            <img src="watermarked_img_5022516084276664718.jpg" alt="Esquema Ramal Eléctrico" class="max-h-[360px] object-contain rounded">
+                        </div>
+                    </div>
+                `;
+            } else if (seccion === 'manuales') {
+                titulo.textContent = "Manuales Oficiales y Diagramas";
+                subtitulo.textContent = "Acceso directo a la base de documentación técnica";
+                panel.innerHTML = `
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <a href="https://mototrix.tech/search" target="_blank" class="bg-slate-800/60 border border-slate-700/60 p-4 rounded-lg hover:border-blue-500 transition block">
+                            <h4 class="font-semibold text-blue-400 text-sm">Catálogo Completo Mototrix</h4>
+                            <p class="text-xs text-slate-400 mt-1">Busca diagramas eléctricos y manuales de taller actualizados en la plataforma.</p>
+                        </a>
+                        <div class="bg-slate-800/60 border border-slate-700/60 p-4 rounded-lg">
+                            <h4 class="font-semibold text-slate-200 text-sm">Repositorio Local de Taller</h4>
+                            <p class="text-xs text-slate-400 mt-1">Archivos de servicio indexados para consulta rápida offline.</p>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
